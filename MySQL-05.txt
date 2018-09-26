@@ -1,0 +1,146 @@
+外键（foreign key）
+constraint 外键名 foreign key （字段）
+references 主表（字段）
+on delete 级联动作
+on update 级联动作
+
+
+
+数据备份 （mysqldump）  linux终端命令
+
+		备份的内容是创建mysql数据库的命令语句,不是数据库的内容
+	
+	格式 
+		mysqldump -u用户名 -p 源库名 > ***.sql
+	源库名的表示方式
+		--all-databases   备份所有库
+		-B 库1 库2 库3     备份多个库
+		库名 表1 表2 表3   备份多张表
+	
+数据恢复 
+	格式
+		mysql -u用户名 -p 目标库名 < ***.sql
+
+	从所有库备份 中恢复某一库
+		mysql -uroot -p --one-database 库名 < ***.sql
+
+	恢复库时,原表数据会被覆盖,新增表不会删除
+	如果库不存在,则必须先创建空库
+
+MySQL调优
+	创建索引
+	           在select,where,order by 常涉及到的字段上建立索引	
+
+	选择合适的存储引擎
+			读操作多: MyISAM
+			写操作多: InnoDB
+
+	SQL语句的优化(避免全表扫描)
+			where 字句尽量不使用 != ,否则放弃索引全表扫描
+
+			尽量避免NULL判断,全表扫描
+
+			尽量避免用 or 连接条件
+			select id from t1 where id=10 
+			union all
+			select id from t1 where id=20;
+		
+			模糊查询避免使用前置 %，
+
+			避免使用in 和 not in 
+				select id from t1 where id in（1,2,3,4）；
+				select id from t1 where id between 1 and 4；
+
+			避免使用select * ...
+
+事务和事务回滚
+	事务:一件事从开始发生到结束的整个过程
+	作用:确保数据的一致性
+	
+应用:	
+	SQL命令会 autocommit 到数据库执行
+
+	show variable autocommit；
+
+	开启事务
+		begin  | start transactions
+			#此时autocommit被禁用#
+	终止事务
+		commit; | rollback;
+
+
+与python交互
+	模块名:pymysql
+	安装:
+		在线:sudo pip3 install pymysql[==版本号]
+		离线:pymysql.tar.gz
+		  解压:steup.py
+			python3 setup.py install
+
+
+	python2模块名: MySQLdb
+		在线安装:sudo pip install mysql-python
+
+	使用流程:
+		建立数据库连接对象(db=pymysql.connect("root".))
+		创建游标对象cur(操作数据库的对象)
+		游标对象:cur.execute()
+		提交到数据库执行db.commit()
+		关闭游标对象cur.close
+		关闭数据库连接对象db.close
+
+
+	connect连接对象
+		db=pymysql.connect(参数列表)
+		host=主机地址
+		user=用户名
+		password=密码
+		database=库
+		charset=编码方式
+		port=端口
+	db(数据库连接对象)的方法
+		db.close()断开连接
+		db.commit()提交到数据库执行
+		db.cursor()游标对象,用来执行sql命令
+		db.rollback() 回滚
+	cursor 游标对象的方法
+		execute 执行sql命令
+		close 关闭游标对象
+		fetchone()获取查询结果的第一条数据
+		fetchmany（n）：获取n条数据
+		fetchall（）获取所有数据
+   		 ##得到的结果是元组
+
+
+	Workbench图形化管理界面
+	Navicat Windows图形管理界面
+
+
+
+  orm（Object Relation Mapping）对象关系映射
+
+
+
+
+创建连接 .connect（参数列表）
+		-h  -u  -p  -db...
+创建游标(光标) .cursor()
+
+执行sql语句 .execute("sql语句;")
+
+提交语句执行 .commit()  /   错误  回滚.rollback()
+
+关闭游标(光标)  .close()
+断开连接  .close()
+
+
+	
+
+
+
+
+
+
+
+
+
